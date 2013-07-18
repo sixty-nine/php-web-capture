@@ -1,0 +1,20 @@
+{
+    "name": "sixty-nine/web-capture",
+    "description": "A library to capture website screenshots using PhantomJs",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Daniele Barsotti",
+            "email": "sixtynine.db@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "dannytrue/phantomjs": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "SixtyNine\\WebCapture": "src"
+        }
+    }
+}
