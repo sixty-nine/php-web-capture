@@ -1,10 +1,11 @@
 <?php
 
-namespace SixtyNine\WebCapture\Tests\Helper;
+namespace SixtyNine\WebCapture\Tests;
 
-use SixtyNine\WebCapture\Helper\PhantomHelper;
+use SixtyNine\WebCapture\PhantomHelper;
+use PHPUnit\Framework\TestCase;
 
-class PhantomHelperTest extends \PHPUnit_Framework_TestCase
+class PhantomHelperTest extends TestCase
 {
     /** @var SixtyNine\WebCapture\Helper\PhantomHelper */
     protected $helper;
@@ -16,17 +17,13 @@ class PhantomHelperTest extends \PHPUnit_Framework_TestCase
         $this->helper = new PhantomHelper($phantomJsPath);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
+    /** @expectedException \InvalidArgumentException */
     public function testUnexistingPhantomBin()
     {
         new PhantomHelper('/unexisting-phantom-bin');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
+    /** @expectedException \InvalidArgumentException */
     public function testUnexistingScriptFile()
     {
         $this->helper->exec('/unexisting-script');
@@ -34,7 +31,7 @@ class PhantomHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testExec()
     {
-        $out = $this->helper->exec(__DIR__ . '/../Fixtures/dummy.js');
+        $out = $this->helper->exec(__DIR__ . '/Fixtures/dummy.js');
         $this->assertEquals("Hello Phantom world\n", $out);
     }
 }

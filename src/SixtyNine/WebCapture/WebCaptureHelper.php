@@ -1,10 +1,9 @@
 <?php
 
-namespace SixtyNine\WebCapture\Helper;
+namespace SixtyNine\WebCapture;
 
 class WebCaptureHelper
 {
-    const SUPPORTED_TYPE_GIF = 'gif';
     const SUPPORTED_TYPE_JPG = 'jpg';
     const SUPPORTED_TYPE_PNG = 'png';
 
@@ -13,9 +12,8 @@ class WebCaptureHelper
      * @var array
      */
     protected $supportedTypes = array(
-        self::SUPPORTED_TYPE_PNG,
         self::SUPPORTED_TYPE_JPG,
-        self::SUPPORTED_TYPE_GIF,
+        self::SUPPORTED_TYPE_PNG,
     );
 
     /**@var \SixtyNine\WebCapture\Helper\PhantomHelper */
@@ -30,18 +28,21 @@ class WebCaptureHelper
     public function __construct(PhantomHelper $phantomHelper)
     {
         $this->phantomHelper = $phantomHelper;
-        $this->rasterizeScript = __DIR__ . '/../Resources/bin/rasterize.js';
+        $this->rasterizeScript = __DIR__ . '/Resources/bin/rasterize.js';
     }
 
     /**
      * Render a screenshot of the given URL in PNG format and returns the content of the image
-     * @param string $url The URL to render
+     * @param string $url
      * @param string $outputFile
      * @param int $width
      * @param int $height
+     * @param int $viewportWidth
+     * @param int $viewportHeight
+     * @param int $zoomFactor
+     * @return string The file content of the rendered image
      * @throws \InvalidArgumentException
      * @throws \Exception
-     * @return string The file content of the rendered image
      */
     public function rasterize($url, $outputFile, $width = 1024, $height = 768, $viewportWidth = 1024, $viewportHeight = 768, $zoomFactor = 1)
     {
@@ -50,6 +51,7 @@ class WebCaptureHelper
         }
 
         // TODO: handle redirects in rasterize script
+
         $out = $this->phantomHelper->exec(
             $this->rasterizeScript,
             array($url, $outputFile, $width, $height, $viewportWidth, $viewportHeight, $zoomFactor)
@@ -62,6 +64,11 @@ class WebCaptureHelper
         }
     }
 
+    /**
+     * Check the extension of the given filename matches a supported output type
+     * @param string $outputFile
+     * @return bool
+     */
     protected function checkOutputFormat($outputFile)
     {
         $ext = pathinfo($outputFile, PATHINFO_EXTENSION);

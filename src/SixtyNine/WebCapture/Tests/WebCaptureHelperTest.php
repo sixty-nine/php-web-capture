@@ -1,11 +1,12 @@
 <?php
 
-namespace SixtyNine\WebCapture\Tests\Helper;
+namespace SixtyNine\WebCapture\Tests;
 
-use SixtyNine\WebCapture\Helper\PhantomHelper;
-use SixtyNine\WebCapture\Helper\WebCaptureHelper;
+use SixtyNine\WebCapture\PhantomHelper;
+use SixtyNine\WebCapture\WebCaptureHelper;
+use PHPUnit\Framework\TestCase;
 
-class WebCaptureHelperTest extends \PHPUnit_Framework_TestCase
+class WebCaptureHelperTest extends TestCase
 {
     /** @var SixtyNine\WebCapture\Helper\WebCaptureHelper */
     protected $helper;
@@ -14,11 +15,13 @@ class WebCaptureHelperTest extends \PHPUnit_Framework_TestCase
     protected $outputFile = '/tmp/output.jpg';
 
     /** @var string */
-    protected $testHtml = 'file:///home/dev/WebCaptureLib/src/src/SixtyNine/WebCapture/Tests/Fixtures/test.html';
+    protected $testHtml;
 
     public function setUp()
     {
         global $phantomJsPath;
+
+        $this->testHtml = sprintf('file://%s/Fixtures/test.html', __DIR__);
 
         $this->helper = new WebCaptureHelper(new PhantomHelper($phantomJsPath));
 
@@ -34,9 +37,7 @@ class WebCaptureHelperTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
+    /** @expectedException \InvalidArgumentException */
     public function testRasterizeInvalidFormat()
     {
         $this->helper->rasterize('http://google.ch', '/tmp/output.bmp');
@@ -45,7 +46,7 @@ class WebCaptureHelperTest extends \PHPUnit_Framework_TestCase
     public function testRasterize()
     {
 
-        foreach (array('png', 'jpeg', 'gif') as $ext) {
+        foreach (array('png', 'jpeg') as $ext) {
 
             $output = '/tmp/output.' . $ext;
 
@@ -79,16 +80,7 @@ class WebCaptureHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(768, $size[1]);
         $this->assertEquals('image/jpeg', $size['mime']);
 
-        // First compare the file sizes to avoid phpunit to display huge diffs if they differ
-        $this->assertEquals(
-            filesize(__DIR__ . '/../Fixtures/test-1024x768-1024x768-1.jpg'),
-            filesize($this->outputFile)
-        );
-
-        $this->assertEquals(
-            file_get_contents(__DIR__ . '/../Fixtures/test-1024x768-1024x768-1.jpg'),
-            file_get_contents($this->outputFile)
-        );
+        $this->assertSameImage(__DIR__ . '/Fixtures/test-1024x768-1024x768-1.jpg', $this->outputFile);
     }
 
     /**
@@ -100,26 +92,35 @@ class WebCaptureHelperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(file_exists($this->outputFile));
 
-        // First compare the file sizes to avoid phpunit to display huge diffs if they differ
-        $this->assertEquals(
-            filesize($expectedImage),
-            filesize($this->outputFile)
-        );
+        if (filesize($expectedImage) !== filesize($this->outputFile)) {
+            die(var_dump('yoo', $this->outputFile, $expectedImage));
+        }
 
-        $this->assertEquals(
-            file_get_contents($expectedImage),
-            file_get_contents($this->outputFile)
-        );
+        $this->assertSameImage($expectedImage, $this->outputFile);
     }
 
     public function dataProvider()
     {
         return array(
-            array(1024, 768, 1024, 768, 1, __DIR__ . '/../Fixtures/test-1024x768-1024x768-1.jpg'),
-            array(1024, 768, 1024, 768, 2, __DIR__ . '/../Fixtures/test-1024x768-1024x768-2.jpg'),
-            array(800, 600, 800, 600, 1, __DIR__ . '/../Fixtures/test-800x600-800x600-1.jpg'),
-            array(1024, 768, 800, 600, 1, __DIR__ . '/../Fixtures/test-1024x768-800x600-1.jpg'),
-            array(800, 600, 1024, 768, 1, __DIR__ . '/../Fixtures/test-800x600-1024x768-1.jpg')
+            array(1024, 768, 1024, 768, 1, __DIR__ . '/Fixtures/test-1024x768-1024x768-1.jpg'),
+            array(1024, 768, 1024, 768, 2, __DIR__ . '/Fixtures/test-1024x768-1024x768-2.jpg'),
+            array(800, 600, 800, 600, 1, __DIR__ . '/Fixtures/test-800x600-800x600-1.jpg'),
+            array(1024, 768, 800, 600, 1, __DIR__ . '/Fixtures/test-1024x768-800x600-1.jpg'),
+            array(800, 600, 1024, 768, 1, __DIR__ . '/Fixtures/test-800x600-1024x768-1.jpg')
+        );
+    }
+
+    protected function assertSameImage($expectedImage, $result)
+    {
+        // First compare the file sizes to avoid phpunit to display huge diffs if they differ
+        $this->assertEquals(
+            filesize($expectedImage),
+            filesize($result)
+        );
+
+        $this->assertEquals(
+            file_get_contents($expectedImage),
+            file_get_contents($result)
         );
     }
 }

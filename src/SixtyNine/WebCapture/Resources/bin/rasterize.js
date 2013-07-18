@@ -1,58 +1,51 @@
 /*jslint devel: true, browser: true, indent: 4 */
 /*global phantom, require */
 
-var Rasterizer = (function () {
+(function (phantom, system) {
 
-    "use strict";
+    'use strict';
 
-    return {
+    if (system.args.length < 2) {
+        console.log('Usage: rasterize.js URL filename [ width height viewportWidth viewportHeight zoomFactor ]');
+        phantom.exit();
+    }
 
-        render: function (url, outputFile, width, height, viewportWidth, viewportHeight, zoomFactor) {
+    var url = system.args[1];
+    var outputFile = system.args[2];
+    var width = system.args[3] || 1024;
+    var height = system.args[4] || 768;
+    var viewportWidth = system.args[5] || 1024;
+    var viewportHeight = system.args[6] || 768;
+    var zoomFactor = system.args[7] || 1;
 
-            var w = width || 1024,
-                h = height || 768,
-                vpWidth = viewportWidth || w,
-                vpHeight = viewportHeight || h,
-                zoom = zoomFactor || 1,
-                page = require('webpage').create();
+    console.log('URL:', url);
+    console.log('Output size:', width + 'x' + height);
+    console.log('Viewport size:', viewportWidth + 'x' + viewportHeight);
+    console.log('Zoom:', zoomFactor);
 
-            page.viewportSize = { width: vpWidth, height: vpHeight };
+    var page = require('webpage').create();
 
-            page.open(url, function (status) {
+    page.viewportSize = { width: viewportWidth, height: viewportHeight };
 
-                if (status !== 'success') {
-                    console.log('Unable to load the address!');
-                    window.setTimeout(function () {
-                        phantom.exit();
-                    }, 200);
-                } else {
-                    window.setTimeout(function () {
-                        page.clipRect = { top: 0, left: 0, width: w, height: h };
-                        page.zoomFactor = zoom;
-                        page.render(outputFile);
-                        console.log('Snapshot done');
-                        phantom.exit();
-                    }, 200);
-                }
+    page.open(url, function (status) {
 
-            });
+        if (status !== 'success') {
+            console.log('Unable to load the address!');
+            window.setTimeout(function () {
+                phantom.exit();
+            }, 200);
+        } else {
+            window.setTimeout(function () {
+                page.clipRect = { top: 0, left: 0, width: width, height: height };
+                page.zoomFactor = zoomFactor;
+                page.render(outputFile);
+                console.log('Snapshot done', outputFile);
+                phantom.exit();
+            }, 200);
         }
 
-    };
+    });
 
-}());
+}(phantom, require('system')));
 
-
-if (phantom.args.length < 2) {
-    console.log('Usage: rasterize.js URL filename [ width height viewportWidth viewportHeight zoomFactor ]');
-    phantom.exit();
-}
-
-Rasterizer.render(
-    phantom.args[0],
-    phantom.args[1],
-    phantom.args[2], phantom.args[3],
-    phantom.args[4], phantom.args[5],
-    phantom.args[6]
-);
 
