@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class PhantomHelperTest extends TestCase
 {
-    /** @var SixtyNine\WebCapture\Helper\PhantomHelper */
+    /** @var SixtyNine\WebCapture\PhantomHelper */
     protected $helper;
 
     public function setUp()

@@ -16,11 +16,14 @@ class WebCaptureHelper
         self::SUPPORTED_TYPE_PNG,
     );
 
-    /**@var \SixtyNine\WebCapture\Helper\PhantomHelper */
+    /**@var \SixtyNine\WebCapture\PhantomHelper */
     protected $phantomHelper;
 
     /** @var string */
     protected $format;
+
+    /** @var string */
+    protected $rasterizeScript;
 
     /**
      * @param PhantomHelper $phantomHelper

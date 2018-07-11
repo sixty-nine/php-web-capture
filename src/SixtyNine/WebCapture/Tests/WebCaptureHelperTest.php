@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class WebCaptureHelperTest extends TestCase
 {
-    /** @var SixtyNine\WebCapture\Helper\WebCaptureHelper */
+    /** @var SixtyNine\WebCapture\WebCaptureHelper */
     protected $helper;
 
     /** @var string */
@@ -93,7 +93,7 @@ class WebCaptureHelperTest extends TestCase
         $this->assertTrue(file_exists($this->outputFile));
 
         if (filesize($expectedImage) !== filesize($this->outputFile)) {
-            die(var_dump('yoo', $this->outputFile, $expectedImage));
+            $this->assertTrue(false, sprintf('File sizes do not match: %s - %s', $this->outputFile, $expectedImage));
         }
 
         $this->assertSameImage($expectedImage, $this->outputFile);

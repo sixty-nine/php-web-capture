@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "64ebac3fa3533db495a4d064386a2ff4",
+    "content-hash": "ceb9489710a4db63dc4911d33eb27df5",
     "packages": [
         {
             "name": "jakoch/phantomjs-installer",

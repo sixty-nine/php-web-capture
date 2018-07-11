@@ -2,7 +2,7 @@ build:
     tests:
         override:
             -
-                command: bin/phpunit --coverage-clover my-coverage-file -c tests
+                command: vendor/bin/phpunit --coverage-clover my-coverage-file -c tests
                 coverage:
                     file: my-coverage-file
                     format: php-clover
@@ -24,3 +24,9 @@ tools:
     php_changetracking: true
     php_pdepend: true
     php_analyzer: true
+
+filter:
+    excluded_paths:
+        - "*/Tests/*"
+    dependency_paths:
+        - vendor/
