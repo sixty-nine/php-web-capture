@@ -1,5 +1,5 @@
 {
-    "name": "sixty-nine/web-capture",
+    "name": "sixty-nine/php-web-capture",
     "description": "A library to capture website screenshots using PhantomJs",
     "type": "library",
     "authors": [
@@ -27,6 +27,7 @@
         ],
         "post-update-cmd": [
             "PhantomInstaller\\Installer::installPhantomJS"
-        ]
+        ],
+        "tests": "vendor/bin/phpunit -c tests"
     }
 }
